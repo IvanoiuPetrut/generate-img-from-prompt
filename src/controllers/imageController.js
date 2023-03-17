@@ -1,7 +1,9 @@
+import imageGenerator from "../utils/imageGenerator.js";
+
 const imageController = {};
 
-imageController.getImage = (prompt) => {
-  const imageUrl = `https://source.unsplash.com/1600x900/?${prompt}`;
+imageController.getImage = async (prompt) => {
+  const imageUrl = await imageGenerator(prompt);
 
   return imageUrl;
 };
