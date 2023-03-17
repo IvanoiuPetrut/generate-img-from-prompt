@@ -3,8 +3,11 @@ import imageRoutes from "../src/routes/imageRoutes.js";
 
 const app = express();
 
-// Middleware
-app.use(express.json());
+// Middleware to handle errors
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: "Internal server error" });
+});
 
 // Routes
 app.use("/api/images", imageRoutes);
