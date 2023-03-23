@@ -1,7 +1,12 @@
 import express from "express";
+import cors from "cors";
 import imageRoutes from "../src/routes/imageRoutes.js";
 
 const app = express();
+
+// Middleware CORS
+
+app.use(cors());
 
 // Middleware to handle errors
 app.use((err, req, res, next) => {
