@@ -6,7 +6,7 @@ This Node.js server uses the OpenAI API to generate an image based on a given pr
 
 To use this server, you'll need to have Node.js and npm installed on your machine. You'll also need to set up an OpenAI API key, which you can obtain from the OpenAI website.
 
-1. Clone this repository to your local machine using `git clone https://github.com/your-username/your-repository.git`.
+1. Clone this repository to your local machine `git clone`.
 2. Navigate to the repository folder and run `npm install` to install the necessary dependencies.
 3. Create a `.env` file in the root of the project directory and add your OpenAI API key as follows:
 
