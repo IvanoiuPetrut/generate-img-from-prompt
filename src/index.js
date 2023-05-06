@@ -1,12 +1,13 @@
 import express from "express";
 import cors from "cors";
+import bodyParser from "body-parser";
+import multer from "multer";
 import imageRoutes from "../src/routes/imageRoutes.js";
 
 const app = express();
 
-// Middleware CORS
-
 app.use(cors());
+app.use(bodyParser.json());
 
 // Middleware to handle errors
 app.use((err, req, res, next) => {

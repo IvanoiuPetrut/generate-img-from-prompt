@@ -1,7 +1,7 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 import { Configuration, OpenAIApi } from "openai";
-import got from "got";
+// import got from "got";
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -9,9 +9,9 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
-const imageStream = got.stream("https://example.com/image.png");
+// const imageStream = got.stream("https://example.com/image.png");
 
-const maskStream = got.stream("https://example.com/mask.png");
+// const maskStream = got.stream("https://example.com/mask.png");
 
 const generateImage = async (prompt, imageStream, maskStream) => {
   const response = await openai.createImageEdit(
