@@ -75,9 +75,6 @@ router.get("/edit/:imageStream/:maskStream", async (req, res) => {
 });
 
 router.post("/", upload.single("image"), async (req, res) => {
-  console.log(req.body);
-  console.log(req.file);
-
   const { imageName } = req.body;
   const { buffer } = req.file;
 

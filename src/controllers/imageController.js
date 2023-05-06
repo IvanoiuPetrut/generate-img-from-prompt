@@ -2,6 +2,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 import imageGenerator from "../utils/imageGenerator.js";
 import imageEdit from "../utils/imageEdit.js";
+import sharp from "sharp";
 import { S3Client } from "@aws-sdk/client-s3";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 
@@ -28,6 +29,15 @@ imageController.editImage = async (prompt, imageStream, maskStream) => {
 };
 
 imageController.postImage = async (imageName, imageBuffer) => {
+  imageBuffer = await sharp(imageBuffer)
+    .resize({
+      width: 1024,
+      height: 1024,
+      fit: "contain",
+    })
+    .png()
+    .toBuffer();
+
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME,
     Key: `${imageName}.png`,
