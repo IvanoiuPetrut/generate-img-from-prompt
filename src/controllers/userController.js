@@ -1,6 +1,6 @@
-import Joi from "joi";
 import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
+import { userSchema, checkUserExists } from "../validations/userValidations.js";
 
 const prisma = new PrismaClient();
 const userController = {};
@@ -8,23 +8,14 @@ const userController = {};
 userController.createUser = async (req, res) => {
   const { name, password } = req.body;
 
-  const schema = Joi.object({
-    name: Joi.string().required(),
-    password: Joi.string().min(8).required(),
-  });
-
-  const { error } = schema.validate({ name, password });
+  const { error } = userSchema.validate({ name, password });
   if (error) {
     return res.status(400).json({
       message: error.details[0].message,
     });
   }
 
-  const userExists = await prisma.user.findUnique({
-    where: {
-      name,
-    },
-  });
+  const userExists = await checkUserExists(name);
   if (userExists) {
     return res.status(409).json({
       message: "User already exists",
@@ -56,24 +47,14 @@ userController.createUser = async (req, res) => {
 userController.loginUser = async (req, res) => {
   const { name, password } = req.body;
 
-  const schema = Joi.object({
-    name: Joi.string().required(),
-    password: Joi.string().min(8).required(),
-  });
-
-  const { error } = schema.validate({ name, password });
+  const { error } = userSchema.validate({ name, password });
   if (error) {
     return res.status(400).json({
       message: error.details[0].message,
     });
   }
 
-  const user = await prisma.user.findUnique({
-    where: {
-      name,
-    },
-  });
-
+  const user = await checkUserExists(name);
   if (!user) {
     return res.status(400).json({
       message: "Invalid credentials",
