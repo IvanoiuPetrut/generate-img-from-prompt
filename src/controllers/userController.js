@@ -1,4 +1,7 @@
+import * as dotenv from "dotenv";
+dotenv.config();
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
 import { userSchema, checkUserExists } from "../validations/userValidations.js";
 
@@ -68,8 +71,18 @@ userController.loginUser = async (req, res) => {
     });
   }
 
+  const token = jwt.sign(
+    {
+      name: user.name,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "24h",
+    }
+  );
+
   res.status(200).json({
-    message: "Login successful",
+    token,
   });
 };
 

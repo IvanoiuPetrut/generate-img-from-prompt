@@ -3,6 +3,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import imageRoutes from "../src/routes/imageRoutes.js";
 import userRoutes from "../src/routes/userRoutes.js";
+import authenticateToken from "./middlewares/auth.js";
 
 const app = express();
 
@@ -16,7 +17,7 @@ app.use((err, req, res, next) => {
 });
 
 // Routes
-app.use("/api/images", imageRoutes);
+app.use("/api/images", authenticateToken, imageRoutes);
 
 app.use("/api/users", userRoutes);
 
