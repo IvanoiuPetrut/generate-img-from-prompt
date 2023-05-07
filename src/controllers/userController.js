@@ -53,4 +53,43 @@ userController.createUser = async (req, res) => {
   }
 };
 
+userController.loginUser = async (req, res) => {
+  const { name, password } = req.body;
+
+  const schema = Joi.object({
+    name: Joi.string().required(),
+    password: Joi.string().min(8).required(),
+  });
+
+  const { error } = schema.validate({ name, password });
+  if (error) {
+    return res.status(400).json({
+      message: error.details[0].message,
+    });
+  }
+
+  const user = await prisma.user.findUnique({
+    where: {
+      name,
+    },
+  });
+
+  if (!user) {
+    return res.status(400).json({
+      message: "Invalid credentials",
+    });
+  }
+
+  const validPassword = await bcrypt.compare(password, user.password);
+  if (!validPassword) {
+    return res.status(400).json({
+      message: "Invalid credentials",
+    });
+  }
+
+  res.status(200).json({
+    message: "Login successful",
+  });
+};
+
 export default userController;
