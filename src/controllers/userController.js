@@ -81,8 +81,13 @@ userController.loginUser = async (req, res) => {
     }
   );
 
-  res.status(200).json({
+  const response = {
     token,
+    userId: user.id,
+  };
+
+  res.status(200).json({
+    response,
   });
 };
 
