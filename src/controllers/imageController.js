@@ -3,8 +3,12 @@ dotenv.config();
 import imageGenerator from "../utils/imageGenerator.js";
 import imageEdit from "../utils/imageEdit.js";
 import sharp from "sharp";
-import { S3Client } from "@aws-sdk/client-s3";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+} from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const s3Client = new S3Client({
   region: process.env.AWS_REGION,
