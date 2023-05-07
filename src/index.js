@@ -1,8 +1,8 @@
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
-import multer from "multer";
 import imageRoutes from "../src/routes/imageRoutes.js";
+import userRoutes from "../src/routes/userRoutes.js";
 
 const app = express();
 
@@ -17,6 +17,8 @@ app.use((err, req, res, next) => {
 
 // Routes
 app.use("/api/images", imageRoutes);
+
+app.use("/api/users", userRoutes);
 
 // Start server
 const port = process.env.PORT || 3000;
