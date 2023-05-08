@@ -86,9 +86,7 @@ userController.loginUser = async (req, res) => {
     userId: user.id,
   };
 
-  res.status(200).json({
-    response,
-  });
+  res.status(200).json(response);
 };
 
 export default userController;

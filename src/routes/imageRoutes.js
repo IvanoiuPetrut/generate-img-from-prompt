@@ -16,7 +16,7 @@ router.get("/test", (req, res) => {
   });
 });
 
-router.get("/", async (req, res) => {
+router.get("/generate", async (req, res) => {
   const { prompt } = req.query;
   console.log(prompt);
 
