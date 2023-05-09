@@ -1,6 +1,7 @@
 import express from "express";
 import multer from "multer";
 import imageController from "../controllers/imageController.js";
+import { imageUrlToBuffer } from "../utils/imageUtilis.js";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -26,12 +27,17 @@ router.get("/generate", async (req, res) => {
 
   try {
     const imageUrl = await imageController.generateImage(prompt);
+    const imageBuffer = await imageUrlToBuffer(imageUrl);
+    const newImageUrl = await imageController.postImage(
+      "cevanuma",
+      imageBuffer
+    );
 
     res.set({
       "Content-Type": "text/plain",
     });
     res.status(200).json({
-      imageUrl,
+      imageUrl: newImageUrl,
       width: 1024,
       height: 1024,
     });

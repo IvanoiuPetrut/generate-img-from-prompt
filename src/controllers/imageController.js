@@ -86,7 +86,7 @@ imageController.postImage = async (imageName, imageBuffer) => {
 
   image.imageUrl = imageUrl;
 
-  return image;
+  return imageUrl;
 };
 
 export default imageController;
