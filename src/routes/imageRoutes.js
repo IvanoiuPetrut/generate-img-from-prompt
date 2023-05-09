@@ -28,10 +28,7 @@ router.get("/generate", async (req, res) => {
   try {
     const imageUrl = await imageController.generateImage(prompt);
     const imageBuffer = await imageUrlToBuffer(imageUrl);
-    const newImageUrl = await imageController.postImage(
-      "cevanuma",
-      imageBuffer
-    );
+    const newImageUrl = await imageController.postImage(imageBuffer, true);
 
     res.set({
       "Content-Type": "text/plain",

@@ -36,7 +36,7 @@ imageController.editImage = async (prompt, imageStream, maskStream) => {
   return imageUrl;
 };
 
-imageController.postImage = async (imageName, imageBuffer) => {
+imageController.postImage = async (imageBuffer, isBase) => {
   imageBuffer = await sharp(imageBuffer)
     .resize({
       width: 1024,
@@ -46,7 +46,8 @@ imageController.postImage = async (imageName, imageBuffer) => {
     .png()
     .toBuffer();
 
-  imageName = randomName(32);
+  let imageName = randomName(32);
+  imageName = `${imageName}-imageType=${isBase ? "base" : "mask"}`;
 
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME,
