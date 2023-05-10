@@ -36,7 +36,7 @@ imageController.editImage = async (prompt, imageStream, maskStream) => {
   return imageUrl;
 };
 
-imageController.postImage = async (imageBuffer, isBase) => {
+imageController.postImage = async (imageBuffer, imageName, isMask) => {
   imageBuffer = await sharp(imageBuffer)
     .resize({
       width: 1024,
@@ -46,8 +46,10 @@ imageController.postImage = async (imageBuffer, isBase) => {
     .png()
     .toBuffer();
 
-  let imageName = randomName(32);
-  imageName = `${imageName}-imageType=${isBase ? "base" : "mask"}`;
+  if (!imageName) {
+    imageName = randomName(32);
+    imageName = `${imageName}-imageType=${isMask ? "mask" : "base"}`;
+  }
 
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME,
@@ -67,6 +69,17 @@ imageController.postImage = async (imageBuffer, isBase) => {
     new GetObjectCommand({
       Bucket: process.env.AWS_BUCKET_NAME,
       Key: `${imageName}.png`,
+      ResponseContentDisposition: "attachment",
+      ResponseContentType: "image/png",
+      Expires: 3600,
+      ACL: "public-read",
+      CORSRules: [
+        {
+          AllowedOrigins: ["*"],
+          AllowedMethods: ["GET", "HEAD"],
+          MaxAgeSeconds: 3000,
+        },
+      ],
     }),
     {
       expiresIn: 3600,
@@ -87,7 +100,9 @@ imageController.postImage = async (imageBuffer, isBase) => {
 
   image.imageUrl = imageUrl;
 
-  return imageUrl;
+  console.log(image);
+
+  return image;
 };
 
 export default imageController;

@@ -26,15 +26,20 @@ router.get("/generate", async (req, res) => {
   }
 
   try {
-    const imageUrl = await imageController.generateImage(prompt);
-    const imageBuffer = await imageUrlToBuffer(imageUrl);
-    const newImageUrl = await imageController.postImage(imageBuffer, true);
+    const generatedImageUrl = await imageController.generateImage(prompt);
+    const imageBuffer = await imageUrlToBuffer(generatedImageUrl);
+    const { imageUrl, name } = await imageController.postImage(
+      imageBuffer,
+      false
+    );
 
+    console.log("NumeImg", name);
     res.set({
       "Content-Type": "text/plain",
     });
     res.status(200).json({
-      imageUrl: newImageUrl,
+      imageUrl,
+      name,
       width: 1024,
       height: 1024,
     });
@@ -78,7 +83,7 @@ router.get("/edit/:imageStream/:maskStream", async (req, res) => {
 });
 
 router.post("/", upload.single("image"), async (req, res) => {
-  const { imageName } = req.body;
+  const { imageName, isMask } = req.body;
   const { buffer } = req.file;
 
   if (!imageName || typeof imageName !== "string") {
@@ -90,7 +95,7 @@ router.post("/", upload.single("image"), async (req, res) => {
   }
 
   try {
-    const imageUrl = await imageController.postImage(imageName, buffer);
+    const imageUrl = await imageController.postImage(buffer, imageName, isMask);
 
     res.status(200).json({
       imageUrl,
