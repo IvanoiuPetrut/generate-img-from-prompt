@@ -3,6 +3,7 @@ import multer from "multer";
 import imageController from "../controllers/imageController.js";
 import { imageUrlToBuffer } from "../utils/imageUtilis.js";
 import randomName from "../utils/randomName.js";
+import { editImage } from "../utils/openAi.js";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -55,31 +56,19 @@ router.get("/generate", async (req, res) => {
   }
 });
 
-router.get("/edit/:imageStream/:maskStream", async (req, res) => {
-  const { imageStream, maskStream } = req.params;
+router.get("/edit", async (req, res) => {
   const { prompt } = req.query;
+  const { imageName } = req.body;
 
-  if (!prompt || typeof prompt !== "string") {
-    return res.status(400).json({ message: "Invalid prompt" });
-  }
+  console.log(prompt);
+  console.log(imageName);
 
   try {
-    const imageUrl = await imageController.editImage(
-      imageStream,
-      maskStream,
-      prompt
-    );
-
-    res.set({
-      "Content-Type": "text/plain",
-    });
+    const imageUrl = await editImage(prompt, imageName);
     res.status(200).json({
       imageUrl,
-      width: 1024,
-      height: 1024,
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({
       message: "Server error",
     });

@@ -1,8 +1,7 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 import { PrismaClient } from "@prisma/client";
-import imageGenerator from "../utils/imageGenerator.js";
-import imageEdit from "../utils/imageEdit.js";
+import { generateImage } from "../utils/openAi.js";
 import sharp from "sharp";
 import {
   S3Client,
@@ -24,13 +23,7 @@ const s3Client = new S3Client({
 const imageController = {};
 
 imageController.generateImage = async (prompt) => {
-  const imageUrl = await imageGenerator(prompt);
-
-  return imageUrl;
-};
-
-imageController.editImage = async (prompt, imageStream, maskStream) => {
-  const imageUrl = await imageEdit(prompt, imageStream, maskStream);
+  const imageUrl = await generateImage(prompt);
 
   return imageUrl;
 };
