@@ -57,16 +57,29 @@ router.get("/generate", async (req, res) => {
 });
 
 router.get("/edit", async (req, res) => {
-  const { prompt } = req.query;
-  const { imageName } = req.body;
+  const { prompt, imageName } = req.query;
 
   console.log(prompt);
   console.log(imageName);
 
+  const baseUrl = await imageController.getImageURL(
+    `${imageName}-imageType=base.png`
+  );
+  const maskUrl = await imageController.getImageURL(
+    `${imageName}-imageType=mask.png`
+  );
+
   try {
-    const imageUrl = await editImage(prompt, imageName);
+    const imageUrl = await editImage(prompt, baseUrl, maskUrl);
+    const imageBuffer = await imageUrlToBuffer(imageUrl);
+    const newImageName = randomName(16) + "-imageType=base";
+    const image = await imageController.postImage(imageBuffer, newImageName);
+
+    console.log("image is ready: ", image.imageUrl);
+
     res.status(200).json({
-      imageUrl,
+      imageUrl: image.imageUrl,
+      imageName: newImageName + "imageType=base.png",
     });
   } catch (error) {
     res.status(500).json({

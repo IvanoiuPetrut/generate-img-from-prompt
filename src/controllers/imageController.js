@@ -38,8 +38,6 @@ imageController.postImage = async (imageBuffer, imageName) => {
     .png()
     .toBuffer();
 
-  console.log("NUMELE IMAGINII", imageName);
-
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME,
     Key: `${imageName}.png`,
@@ -88,10 +86,24 @@ imageController.postImage = async (imageBuffer, imageName) => {
     });
 
   image.imageUrl = imageUrl;
-
-  console.log(image);
-
   return image;
+};
+
+imageController.getImageURL = async (imageName) => {
+  const imageUrl = await getSignedUrl(
+    s3Client,
+    new GetObjectCommand({
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: imageName,
+      ResponseContentType: "image/png",
+      Expires: 3600,
+    }),
+    {
+      expiresIn: 3600,
+    }
+  );
+
+  return imageUrl;
 };
 
 export default imageController;

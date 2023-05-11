@@ -1,7 +1,7 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 import { Configuration, OpenAIApi } from "openai";
-import { createReadStream } from "fs";
+import axios from "axios";
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -20,23 +20,27 @@ const generateImage = async (prompt) => {
   return response.data.data[0].url;
 };
 
-const editImage = async (prompt, imageName) => {
-  console.log("Prompt fc", prompt);
-  console.log("Numele imaginii fc", imageName);
+const editImage = async (prompt, baseUrl, maskUrl) => {
+  const srcReadStream = await axios({
+    method: "GET",
+    url: baseUrl,
+    responseType: "stream",
+  }).then((response) => response.data);
 
-  const src = `./images/${imageName}-imageType=base.png`;
-  const mask = `./images/${imageName}-imageType=mask.png`;
+  const maskReadStream = await axios({
+    method: "GET",
+    url: maskUrl,
+    responseType: "stream",
+  }).then((response) => response.data);
 
   const response = await openai.createImageEdit(
-    createReadStream(src),
-    createReadStream(mask),
+    srcReadStream,
+    maskReadStream,
     prompt,
     1,
     "1024x1024"
   );
 
-  const url = response.data.data[0].url;
-  console.log(response.data.data[0].url);
-  return url;
+  return response.data.data[0].url;
 };
 export { generateImage, editImage };
