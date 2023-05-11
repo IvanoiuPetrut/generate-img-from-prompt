@@ -3,7 +3,6 @@ dotenv.config();
 import { PrismaClient } from "@prisma/client";
 import imageGenerator from "../utils/imageGenerator.js";
 import imageEdit from "../utils/imageEdit.js";
-import randomName from "../utils/randomName.js";
 import sharp from "sharp";
 import {
   S3Client,
@@ -36,7 +35,7 @@ imageController.editImage = async (prompt, imageStream, maskStream) => {
   return imageUrl;
 };
 
-imageController.postImage = async (imageBuffer, imageName, isMask) => {
+imageController.postImage = async (imageBuffer, imageName) => {
   imageBuffer = await sharp(imageBuffer)
     .resize({
       width: 1024,
@@ -46,10 +45,7 @@ imageController.postImage = async (imageBuffer, imageName, isMask) => {
     .png()
     .toBuffer();
 
-  if (!imageName) {
-    imageName = randomName(32);
-    imageName = `${imageName}-imageType=${isMask ? "mask" : "base"}`;
-  }
+  console.log("NUMELE IMAGINII", imageName);
 
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME,

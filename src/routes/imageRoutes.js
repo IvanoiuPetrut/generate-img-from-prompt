@@ -2,6 +2,7 @@ import express from "express";
 import multer from "multer";
 import imageController from "../controllers/imageController.js";
 import { imageUrlToBuffer } from "../utils/imageUtilis.js";
+import randomName from "../utils/randomName.js";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -25,12 +26,15 @@ router.get("/generate", async (req, res) => {
     return res.status(400).json({ message: "Invalid prompt" });
   }
 
+  let imageName = randomName(16);
+  imageName = imageName + "-imageType=base";
+
   try {
     const generatedImageUrl = await imageController.generateImage(prompt);
     const imageBuffer = await imageUrlToBuffer(generatedImageUrl);
     const { imageUrl, name } = await imageController.postImage(
       imageBuffer,
-      false
+      imageName
     );
 
     console.log("NumeImg", name);
